@@ -8,13 +8,13 @@ export default function useAuth() {
   const handleLogin = () => {
     localStorage.setItem("isLoggedIn", true);
     setIsLoggedIn(true);
-    console.log("auth updated to true");
+    console.log("isLoggedIn updated to true");
   };
 
   const handleLogout = () => {
     localStorage.setItem("isLoggedIn", false);
     setIsLoggedIn(false);
-    console.log("auth updated to false");
+    console.log("auisLoggedInth updated to false");
   };
 
   useEffect(() => {

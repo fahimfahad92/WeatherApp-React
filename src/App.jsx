@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import "./App.css";
+import "./index.css";
 import Login from "./component/Login";
 import Dashboard from "./component/Dashboard";
 import useAuth from "./hooks/useAuth";
@@ -9,13 +10,14 @@ function App() {
 
   return (
     <>
-      <div>Weather APP Project</div>
-      {console.log("Renderng for " + isLoggedIn)}
-      {isLoggedIn ? (
-        <Dashboard handleLogout={handleLogout} />
-      ) : (
-        <Login handleLogin={handleLogin} />
-      )}
+      <div>
+        {console.log("Renderng for " + isLoggedIn)}
+        {isLoggedIn ? (
+          <Dashboard handleLogout={handleLogout} />
+        ) : (
+          <Login handleLogin={handleLogin} />
+        )}
+      </div>
     </>
   );
 }
