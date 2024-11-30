@@ -1,5 +1,5 @@
 import WeatherCard from "./WeatherCard";
-import WeatherDetail from "./WeatherDetail";
+
 import FormComponent from "./FormComponent";
 import { useState, useEffect } from "react";
 import "../index.css";
@@ -41,13 +41,6 @@ export default function Dashboard({ handleLogout }) {
             ) : null
           )}
         </div>
-
-        {/* <div id="main-wrapper">
-          <div id="fixed-width">
-            {" "}
-            <WeatherDetail />
-          </div>
-        </div> */}
       </div>
     </>
   );

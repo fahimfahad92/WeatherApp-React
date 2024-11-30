@@ -11,15 +11,20 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
+import WeatherDetail from "./WeatherDetail";
+
 export default function WeatherCard({ location }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [localDate, setLocalDate] = useState("");
 
   useEffect(() => {
     if (!location || location == "") return;
 
     const url = import.meta.env.VITE_WEATHER_API_GET_DATA_URL + location;
+
     const fetchData = async () => {
       try {
         const response = await fetch(url);
@@ -28,6 +33,7 @@ export default function WeatherCard({ location }) {
         }
         const result = await response.json();
         setData(result);
+        setLocalDate(result.location.localtime);
         console.log(result);
       } catch (error) {
         setError(error);
@@ -39,55 +45,65 @@ export default function WeatherCard({ location }) {
     fetchData();
   }, []);
 
-  const handleClick = () => {
-    console.log("clicked");
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) {
+    alert(`Error: ${error.message}`);
+    return;
+  }
   if (!data) return null; // or initial state handling
 
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>{data.location.name}</CardTitle>
-        <CardDescription>{data.location.country}</CardDescription>
-        <CardDescription>
-          <img
+    <>
+      <Card className="w-[300px]">
+        <CardHeader>
+          <CardTitle>{data.location.name}</CardTitle>
+          <CardDescription>{data.location.country}</CardDescription>
+          <CardDescription>
+            <img
+              className="center"
+              src={data.current.condition.icon}
+              alt={data.current.condition.text}
+            />
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5 items-center">
+              Last updated: <Label>{data.location.localtime}</Label>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="name">
+                {data.current.is_day ? " Day" : " Night"}
+              </Label>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              Temperature
+              <Label htmlFor="framework">{data.current.temp_c}°C</Label>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex items-center justify-between">
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={togglePopup}
             className="center"
-            src={data.current.condition.icon}
-            alt={data.current.condition.text}
-          />
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid w-full items-center gap-4">
-          <div className="flex flex-col space-y-1.5 items-center">
-            <Label htmlFor="name">{data.location.localtime}</Label>
-          </div>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="name">
-              {data.current.is_day ? " Day" : " Night"}
-            </Label>
-          </div>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="name">Temperature</Label>
-          </div>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="framework">{data.current.temp_c}</Label>
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className="flex items-center justify-between">
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleClick}
-          className="center"
-        >
-          Details
-        </Button>
-      </CardFooter>
-    </Card>
+          >
+            Details
+          </Button>
+        </CardFooter>
+      </Card>
+
+      <WeatherDetail
+        isOpen={isOpen}
+        togglePopup={togglePopup}
+        location={location}
+        localDate={localDate}
+      />
+    </>
   );
 }
