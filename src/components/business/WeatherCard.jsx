@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 import {
   Card,
@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 
 import WeatherDetail from "./WeatherDetail";
 
-export default function WeatherCard({ location }) {
+export default function WeatherCard({ location, removeInvalidCity }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -23,7 +23,12 @@ export default function WeatherCard({ location }) {
   useEffect(() => {
     if (!location || location == "") return;
 
-    const url = import.meta.env.VITE_WEATHER_API_GET_DATA_URL + location;
+    const url =
+      import.meta.env.VITE_WEATHER_API_BASE_URL +
+      import.meta.env.VITE_WEATHER_API_GET_CURRENT_DATA_PATH +
+      import.meta.env.VITE_WEATHER_API_API_KEY +
+      "&q=" +
+      location;
 
     const fetchData = async () => {
       try {
@@ -52,7 +57,10 @@ export default function WeatherCard({ location }) {
   if (loading) return <p>Loading...</p>;
   if (error) {
     alert(`Error: ${error.message}`);
-    return;
+    setError(null);
+    removeInvalidCity(location);
+
+    return null;
   }
   if (!data) return null; // or initial state handling
 

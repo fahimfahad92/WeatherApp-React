@@ -1,0 +1,13 @@
+.center {
+  position: absolute;
+  margin: auto;
+  top: 40%;
+  left: 40%;
+  place-items: center;
+}
+
+h1 {
+  font-size: 2em;
+  line-height: 1.1;
+  font-weight: 500;
+}

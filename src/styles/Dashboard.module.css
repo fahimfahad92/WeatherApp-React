@@ -1,0 +1,21 @@
+.divColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainWrapper {
+  width: 100%;
+  background: #f9f9f9;
+  padding: 5px;
+}
+
+.fixedWidth {
+  width: 400px;
+  float: left;
+  padding: 5px;
+}
+
+.leftButton {
+  float: right;
+  padding: 5px;
+}

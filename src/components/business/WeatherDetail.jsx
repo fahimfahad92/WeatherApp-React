@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import styles from "../../styles/WeatherDetail.module.css";
 
 import {
   Card,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import LineChartComponent from "./LineChartComponent";
+
 export default function WeatherDetail({
   isOpen,
   togglePopup,
@@ -35,8 +37,10 @@ export default function WeatherDetail({
     console.log(queryDate);
 
     const url =
-      import.meta.env.VITE_WEATHER_API_GET_DETAIL_URL +
-      "q=" +
+      import.meta.env.VITE_WEATHER_API_BASE_URL +
+      import.meta.env.VITE_WEATHER_API_GET_DETAIL_PATH +
+      import.meta.env.VITE_WEATHER_API_API_KEY +
+      "&q=" +
       location +
       "&dt=" +
       queryDate;
@@ -53,7 +57,6 @@ export default function WeatherDetail({
         }
         const result = await response.json();
         setData(result);
-        //console.log(result);
 
         let chartInfo = [];
 
@@ -75,13 +78,17 @@ export default function WeatherDetail({
   }, [location]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) {
+    alert(`Error: ${error.message}`);
+    setError(null);
+    return null;
+  }
   if (!data) return null; // or initial state handling
 
   return (
     <div>
       {isOpen && (
-        <div className="popup">
+        <div className={styles.popup}>
           <Card className="w-[550px]">
             <CardHeader>
               <CardTitle>{data.location.name}</CardTitle>

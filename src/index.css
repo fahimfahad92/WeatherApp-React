@@ -30,40 +30,6 @@ body {
   place-items: center;
 }
 
-/* h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  font-weight:500;
-} */
-
-#div-column {
-  display:flex;
-  flex-direction: column;
-}
-
-#main-wrapper {
-  width: 100%;
-  background: #f9f9f9;
-  padding: 5px;  
-}
-
-#fixed-width {
-  width:400px;
-  float:left;
-  padding: 5px;  
-}
-
-#left-button {
-  float:right;
-  padding: 5px;  
-}
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 button {
   border-radius: 8px;
   border: 1px solid transparent;
