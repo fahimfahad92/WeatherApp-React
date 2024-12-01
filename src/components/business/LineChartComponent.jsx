@@ -21,8 +21,6 @@ export const chartConfig = {
 };
 
 export default function LineChartComponent({ date, chartData }) {
-  console.log("Data for " + date);
-
   return (
     <Card>
       <CardHeader>

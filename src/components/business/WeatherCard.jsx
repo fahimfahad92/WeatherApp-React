@@ -13,39 +13,43 @@ import { Label } from "@/components/ui/label";
 
 import WeatherDetail from "./WeatherDetail";
 
-export default function WeatherCard({ location, removeInvalidCity }) {
+export default function WeatherCard({
+  location,
+  removeCity,
+  addToWatchList,
+  removefromWatchList,
+}) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [localDate, setLocalDate] = useState("");
 
+  const url =
+    import.meta.env.VITE_WEATHER_API_BASE_URL +
+    import.meta.env.VITE_WEATHER_API_GET_CURRENT_DATA_PATH +
+    import.meta.env.VITE_WEATHER_API_API_KEY +
+    "&q=" +
+    location;
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const result = await response.json();
+      setData(result);
+      setLocalDate(result.location.localtime);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!location || location == "") return;
-
-    const url =
-      import.meta.env.VITE_WEATHER_API_BASE_URL +
-      import.meta.env.VITE_WEATHER_API_GET_CURRENT_DATA_PATH +
-      import.meta.env.VITE_WEATHER_API_API_KEY +
-      "&q=" +
-      location;
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const result = await response.json();
-        setData(result);
-        setLocalDate(result.location.localtime);
-        console.log(result);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchData();
   }, []);
@@ -54,11 +58,16 @@ export default function WeatherCard({ location, removeInvalidCity }) {
     setIsOpen(!isOpen);
   };
 
+  const refreshData = () => {
+    if (!location || location == "") return;
+    fetchData();
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) {
     alert(`Error: ${error.message}`);
     setError(null);
-    removeInvalidCity(location);
+    removeCity(location);
 
     return null;
   }
@@ -96,12 +105,38 @@ export default function WeatherCard({ location, removeInvalidCity }) {
         </CardContent>
         <CardFooter className="flex items-center justify-between">
           <Button
-            variant="destructive"
+            variant="outline"
+            size="sm"
+            onClick={refreshData}
+            className="center"
+          >
+            Refresh
+          </Button>
+          <Button
+            variant="default"
             size="sm"
             onClick={togglePopup}
             className="center"
           >
             Details
+          </Button>
+        </CardFooter>
+        <CardFooter>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => removefromWatchList(location)}
+            className="center"
+          >
+            Remove
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => addToWatchList(location)}
+            className="center"
+          >
+            Add To Watch List
           </Button>
         </CardFooter>
       </Card>

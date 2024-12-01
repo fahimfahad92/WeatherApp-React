@@ -34,7 +34,6 @@ export default function WeatherDetail({
     var year = date.getFullYear();
 
     const queryDate = year + "-" + month + "-" + day;
-    console.log(queryDate);
 
     const url =
       import.meta.env.VITE_WEATHER_API_BASE_URL +
@@ -65,7 +64,6 @@ export default function WeatherDetail({
           chartInfo.push(hourInfo);
         });
 
-        console.log("Chart data ready for " + location);
         setChartData(chartInfo);
       } catch (error) {
         setError(error);

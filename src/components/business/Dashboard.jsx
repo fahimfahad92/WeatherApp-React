@@ -9,10 +9,13 @@ import FormComponent from "./FormComponent";
 
 export default function Dashboard() {
   const [cityName, setCityName] = useState("");
-  const [cities, setCities] = useState([]);
+  const [cities, setCities] = useState(
+    localStorage.getItem("watchList")
+      ? JSON.parse(localStorage.getItem("watchList"))
+      : []
+  );
 
   useEffect(() => {
-    console.log("Searched city " + cityName);
     setCities((prevCities) => {
       if (prevCities.includes(cityName.toLowerCase()) || cityName == "") {
         return [...prevCities];
@@ -20,15 +23,35 @@ export default function Dashboard() {
 
       return [...prevCities, cityName.toLowerCase()];
     });
-    console.log(cities);
   }, [cityName]);
 
-  const removeInvalidCity = (city) => {
-    console.log("removing invalid entry " + city);
+  const removeCity = (city) => {
     const updatedCities = cities.filter(function (currentLocation) {
       return currentLocation !== city;
     });
     setCities(updatedCities);
+  };
+
+  const addToWatchList = (city) => {
+    const watchList = localStorage.getItem("watchList")
+      ? JSON.parse(localStorage.getItem("watchList"))
+      : [];
+    if (watchList.includes(city)) {
+      return;
+    }
+    localStorage.setItem("watchList", JSON.stringify([...watchList, city]));
+  };
+
+  const removefromWatchList = (city) => {
+    const watchList = localStorage.getItem("watchList")
+      ? JSON.parse(localStorage.getItem("watchList"))
+      : [];
+    const updatedWatchList = watchList.filter(function (currentLocation) {
+      return currentLocation !== city;
+    });
+    localStorage.setItem("watchList", JSON.stringify([...updatedWatchList]));
+
+    removeCity(city);
   };
 
   return (
@@ -53,7 +76,9 @@ export default function Dashboard() {
               <div className={styles.fixedWidth} key={city}>
                 <WeatherCard
                   location={city}
-                  removeInvalidCity={removeInvalidCity}
+                  removeCity={removeCity}
+                  addToWatchList={addToWatchList}
+                  removefromWatchList={removefromWatchList}
                 />
               </div>
             ) : null
