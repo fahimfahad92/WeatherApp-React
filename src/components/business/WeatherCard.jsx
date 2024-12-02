@@ -34,6 +34,7 @@ export default function WeatherCard({
 
   const fetchData = async () => {
     try {
+      console.log("Weather card api call for " + location);
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -50,7 +51,9 @@ export default function WeatherCard({
 
   useEffect(() => {
     if (!location || location == "") return;
-
+    {
+      console.log("Weather card rendering for " + location);
+    }
     fetchData();
   }, []);
 
@@ -142,6 +145,7 @@ export default function WeatherCard({
       </Card>
 
       <WeatherDetail
+        key={location}
         isOpen={isOpen}
         togglePopup={togglePopup}
         location={location}

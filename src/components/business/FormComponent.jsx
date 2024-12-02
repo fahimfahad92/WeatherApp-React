@@ -10,7 +10,7 @@ const FormComponent = ({ setCityName }) => {
 
   const onSubmit = (data) => {
     setCityName(data.cityName);
-    reset(); // Reset form after submission
+    reset();
   };
 
   return (
@@ -18,7 +18,7 @@ const FormComponent = ({ setCityName }) => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="name">Enter city name</Label>
+            <Label>Enter city name</Label>
             <Input
               id="name"
               {...register("cityName", { required: true })}
@@ -27,7 +27,7 @@ const FormComponent = ({ setCityName }) => {
             />
           </div>
           <Button type="submit" className="w-full">
-            Submit
+            Search
           </Button>
         </form>
       </CardContent>

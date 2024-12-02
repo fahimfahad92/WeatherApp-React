@@ -25,53 +25,54 @@ export default function WeatherDetail({
   const [error, setError] = useState(null);
   const [chartData, setChartData] = useState([]);
 
+  var date = new Date(localDate);
+  var day = date.getDate();
+  var month = date.getMonth() + 1;
+  var year = date.getFullYear();
+
+  const queryDate = year + "-" + month + "-" + day;
+
+  const url =
+    import.meta.env.VITE_WEATHER_API_BASE_URL +
+    import.meta.env.VITE_WEATHER_API_GET_DETAIL_PATH +
+    import.meta.env.VITE_WEATHER_API_API_KEY +
+    "&q=" +
+    location +
+    "&dt=" +
+    queryDate;
+
+  const fetchData = async () => {
+    try {
+      console.log("Weather detail api call for " + location);
+      const response = await fetch(url, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const result = await response.json();
+      setData(result);
+
+      let chartInfo = [];
+
+      result.forecast.forecastday[0].hour.forEach((hourData) => {
+        const hourInfo = { hour: hourData.time, temp: hourData.temp_c };
+        chartInfo.push(hourInfo);
+      });
+
+      setChartData(chartInfo);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!location || location == "") return;
-
-    var date = new Date(localDate);
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-
-    const queryDate = year + "-" + month + "-" + day;
-
-    const url =
-      import.meta.env.VITE_WEATHER_API_BASE_URL +
-      import.meta.env.VITE_WEATHER_API_GET_DETAIL_PATH +
-      import.meta.env.VITE_WEATHER_API_API_KEY +
-      "&q=" +
-      location +
-      "&dt=" +
-      queryDate;
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url, {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const result = await response.json();
-        setData(result);
-
-        let chartInfo = [];
-
-        result.forecast.forecastday[0].hour.forEach((hourData) => {
-          const hourInfo = { hour: hourData.time, temp: hourData.temp_c };
-          chartInfo.push(hourInfo);
-        });
-
-        setChartData(chartInfo);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    console.log("Weather detail rendering for " + location);
     fetchData();
   }, [location]);
 

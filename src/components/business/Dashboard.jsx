@@ -5,17 +5,21 @@ import { useEffect, useState } from "react";
 import { auth, logout } from "../../firebase";
 import styles from "../../styles/Dashboard.module.css";
 
+import {
+  getArrayFromLocalStorage,
+  removeItemFromLocalStorageArray,
+  setItemInLocalStorageAsArray,
+} from "../../util/LocalStorageHelper";
 import FormComponent from "./FormComponent";
 
 export default function Dashboard() {
   const [cityName, setCityName] = useState("");
-  const [cities, setCities] = useState(
-    localStorage.getItem("watchList")
-      ? JSON.parse(localStorage.getItem("watchList"))
-      : []
-  );
+  const [cities, setCities] = useState(getArrayFromLocalStorage("watchList"));
 
   useEffect(() => {
+    {
+      console.log("Dashboard rendering");
+    }
     setCities((prevCities) => {
       if (prevCities.includes(cityName.toLowerCase()) || cityName == "") {
         return [...prevCities];
@@ -33,24 +37,17 @@ export default function Dashboard() {
   };
 
   const addToWatchList = (city) => {
-    const watchList = localStorage.getItem("watchList")
-      ? JSON.parse(localStorage.getItem("watchList"))
-      : [];
+    const watchList = getArrayFromLocalStorage("watchList");
     if (watchList.includes(city)) {
+      alert(`${city} is already in the watch list`);
       return;
     }
-    localStorage.setItem("watchList", JSON.stringify([...watchList, city]));
+    setItemInLocalStorageAsArray("watchList", city);
+    alert(`${city} added to watch list`);
   };
 
   const removefromWatchList = (city) => {
-    const watchList = localStorage.getItem("watchList")
-      ? JSON.parse(localStorage.getItem("watchList"))
-      : [];
-    const updatedWatchList = watchList.filter(function (currentLocation) {
-      return currentLocation !== city;
-    });
-    localStorage.setItem("watchList", JSON.stringify([...updatedWatchList]));
-
+    removeItemFromLocalStorageArray("watchList", city);
     removeCity(city);
   };
 
@@ -72,7 +69,7 @@ export default function Dashboard() {
 
         <div className={styles.mainWrapper}>
           {cities.map((city) =>
-            city && city != "" ? (
+            city ? (
               <div className={styles.fixedWidth} key={city}>
                 <WeatherCard
                   location={city}
